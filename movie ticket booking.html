@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movie Ticket Booking</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #1e1e2f;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: #ff4757;
+      padding: 15px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .container {
+      width: 90%;
+      margin: 20px auto;
+      max-width: 900px;
+    }
+
+    .movie-select {
+      margin: 20px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    select {
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      font-size: 16px;
+    }
+
+    .screen {
+      background: #fff;
+      height: 60px;
+      margin: 20px 0;
+      transform: rotateX(-45deg);
+      box-shadow: 0 3px 10px rgba(255,255,255,0.7);
+    }
+
+    .seats {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 10px;
+      justify-items: center;
+    }
+
+    .seat {
+      width: 25px;
+      height: 25px;
+      background: #444;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .seat.selected {
+      background: #2ecc71;
+    }
+
+    .seat.occupied {
+      background: #e74c3c;
+      cursor: not-allowed;
+    }
+
+    .legend {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .legend div {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      background: #ff4757;
+      color: #fff;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+
+    button:hover {
+      background: #e84118;
+    }
+  </style>
+</head>
+<body>
+  <header>🎬 Movie Ticket Booking</header>
+  
+  <div class="container">
+    <div class="movie-select">
+      <label for="movie">Choose a Movie:</label>
+      <select id="movie">
+        <option value="250">Avengers: Endgame ($250)</option>
+        <option value="200">Spider-Man: No Way Home ($200)</option>
+        <option value="150">The Batman ($150)</option>
+        <option value="100">Frozen 2 ($100)</option>
+      </select>
+    </div>
+
+    <div class="screen"></div>
+
+    <div class="seats" id="seats"></div>
+
+    <div class="legend">
+      <div><div class="seat"></div> Available</div>
+      <div><div class="seat selected"></div> Selected</div>
+      <div><div class="seat occupied"></div> Occupied</div>
+    </div>
+
+    <p id="summary">You have selected <b>0</b> seats for a total of <b>$0</b>.</p>
+
+    <button onclick="bookTickets()">Book Tickets</button>
+  </div>
+
+  <script>
+    const seatsContainer = document.getElementById("seats");
+    const summary = document.getElementById("summary");
+    const movieSelect = document.getElementById("movie");
+
+    // Generate seats
+    for (let i = 0; i < 48; i++) {
+      const seat = document.createElement("div");
+      seat.classList.add("seat");
+      if (Math.random() < 0.2) seat.classList.add("occupied"); // random occupied seats
+      seat.addEventListener("click", () => {
+        if (!seat.classList.contains("occupied")) {
+          seat.classList.toggle("selected");
+          updateSummary();
+        }
+      });
+      seatsContainer.appendChild(seat);
+    }
+
+    function updateSummary() {
+      const selectedSeats = document.querySelectorAll(".seat.selected");
+      const ticketPrice = +movieSelect.value;
+      const count = selectedSeats.length;
+      const total = count * ticketPrice;
+
+      summary.innerHTML = `You have selected <b>${count}</b> seat(s) for a total of <b>$${total}</b>.`;
+    }
+
+    movieSelect.addEventListener("change", updateSummary);
+
+    function bookTickets() {
+      const selectedSeats = document.querySelectorAll(".seat.selected");
+      if (selectedSeats.length === 0) {
+        alert("Please select at least one seat.");
+        return;
+      }
+      alert("✅ Booking Confirmed! Enjoy your movie 🍿");
+      selectedSeats.forEach(seat => seat.classList.remove("selected"));
+      updateSummary();
+    }
+  </script>
+</body>
+</html>
